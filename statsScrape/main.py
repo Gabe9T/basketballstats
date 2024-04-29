@@ -3,11 +3,13 @@ from bs4 import BeautifulSoup
 import requests
 import firebase_admin
 from firebase_admin import credentials
+from firebase_admin import firestore
+
+app = Flask(__name__)
 
 cred = credentials.Certificate("../serviceAccountKey.json")
 firebase_admin.initialize_app(cred)
-
-app = Flask(__name__)
+db = firestore.client()
 
 @app.route('/')
 def scrape_basketball_stats():
@@ -37,10 +39,9 @@ def scrape_basketball_stats():
                             player_info.append(column.text)
                     stats.append(player_info)
                 
-                all_stats[letter] = {
-                    'caption': caption,
-                    'stats': stats
-                }
+                letter_players_ref = db.collection('players').document(letter)
+                players_data = [{'name': player_info[0]['text'], 'stats': player_info[1:]} for player_info in stats if player_info]  # Extract player names and stats
+                letter_players_ref.set({'players': players_data})
             else:
                 all_stats[letter] = "Table not found on the webpage."
         else:
