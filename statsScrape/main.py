@@ -28,20 +28,17 @@ def scrape_basketball_stats():
                 caption = table.find('caption').text
                 data_rows = table.find_all('tr')
                 
-                stats = []
                 for row in data_rows:
-                    player_info = []
+                    player_info = {}
                     columns = row.find_all(['td', 'a'])
-                    for column in columns:
-                        if column.name == 'a':
-                            player_info.append({'text': column.text, 'href': column['href']})
-                        else:
-                            player_info.append(column.text)
-                    stats.append(player_info)
-                
-                letter_players_ref = db.collection('players').document(letter)
-                players_data = [{'name': player_info[0]['text'], 'stats': player_info[1:]} for player_info in stats if player_info]  # Extract player names and stats
-                letter_players_ref.set({'players': players_data})
+                    if columns:  
+                        player_name = columns[0].text 
+                        player_info['name'] = player_name
+                        player_stats = [column.text for column in columns[1:]] 
+                        for index, stat in enumerate(player_stats):
+                            player_info[str(index)] = stat
+                        letter_players_ref = db.collection('players').document(letter).collection('players').document(player_name)  
+                        letter_players_ref.set(player_info)  
             else:
                 all_stats[letter] = "Table not found on the webpage."
         else:
