@@ -22,13 +22,14 @@ const App: React.FC = () => {
   const [searchTermDOB, setSearchTermDOB] = useState('');
   const [searchTermCollege, setSearchTermCollege] = useState('');
   const [players, setPlayers] = useState<any[]>([]);
+  const [showActivePlayers, setShowActivePlayers] = useState(true); 
 
   useEffect(() => {
     const localPlayers = localStorage.getItem('basketballPlayers');
     if (localPlayers) {
       setPlayers(JSON.parse(localPlayers));
     } else {
-      //grabs data from db if not already cached
+            //grabs data from db if not already cached
       fetchPlayersFromFirestore();
     }
   }, []);
@@ -41,12 +42,17 @@ const App: React.FC = () => {
     }
   };
 
+  const handleActivePlayersClick = () => {
+    setShowActivePlayers(!showActivePlayers);
+  };
+
   const filteredPlayers = players?.filter((player: any) => {
     const startYear = parseInt(player['0'], 10);
     const endYear = parseInt(player['1'], 10);
     const searchYear = parseInt(searchTermYearsActive, 10);
     
     return (
+      (!showActivePlayers || (startYear <= new Date().getFullYear() && endYear >= new Date().getFullYear())) &&
       (searchTermName === '' || player.name.toLowerCase().includes(searchTermName.toLowerCase())) &&
       (searchTermYearsActive === '' || (startYear <= searchYear && searchYear <= endYear)) &&
       (searchTermPosition === '' || player['2'].toLowerCase() === searchTermPosition.toLowerCase()) &&
@@ -61,7 +67,7 @@ const App: React.FC = () => {
 
   return (
     <div>
-      <h1>Basketball Players Stats</h1>
+      <h1>Player Search</h1>
       <div>
         <input
           type="text"
@@ -108,6 +114,9 @@ const App: React.FC = () => {
           value={searchTermCollege}
           onChange={(e) => setSearchTermCollege(e.target.value)}
         />
+        <button onClick={handleActivePlayersClick}>
+          {showActivePlayers ? 'Show All Players' : 'Show Active Players'}
+        </button>
       </div>
       <div>
         {filteredPlayers?.map((player: any) => (
