@@ -162,10 +162,10 @@ const App = () => {
           {showActivePlayers ? 'Show All Players' : 'Show Active Players'}
         </Button>
       </div>
-      <div>
+      <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between' }}>
         {filteredPlayers?.map((player: any) => (
-          <div key={player.name} style={{ marginBottom: '20px', border: '1px solid #ddd', padding: '10px', position: 'relative' }}>
-            <Typography variant="h5" style={{ textTransform: 'uppercase' }}>{player.name.toUpperCase()}</Typography>
+          <div key={player.name} style={{ marginBottom: '20px', border: '1px solid #ddd', padding: '10px', width: 'calc(20% - 20px)', position: 'relative' }}>
+            <Typography variant="h5" style={{ textTransform: 'uppercase', cursor: 'pointer' }} onClick={() => handlePlayerSelect(player.name)}>{player.name.toUpperCase()}</Typography>
             <Checkbox
               style={{ position: 'absolute', top: 0, right: 0 }}
               checked={selectedPlayers.includes(player.name)}
