@@ -61,7 +61,7 @@ The player comparison feature allows users to select multiple players and compar
 
 
 ## todo 
-*-add charted info
-*-some team info 
-*- nice looking frontend 
-*- readme for backend
+- add charted info
+- some team info 
+- nice looking frontend 
+- readme for backend
