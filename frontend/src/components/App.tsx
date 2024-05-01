@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useCollectionData } from 'react-firebase-hooks/firestore';
 import firebase from 'firebase/compat/app';
 import 'firebase/compat/firestore';
-import { Typography, TextField, Button, Select, MenuItem, FormControl, InputLabel } from '@mui/material';
+import { Typography, TextField, Button, Select, MenuItem, FormControl, InputLabel, Checkbox } from '@mui/material';
 
 const firebaseConfig = {
   apiKey: "AIzaSyB-JYRIALparZSHrk7OBOdDUdmAAiSV19s",
@@ -30,16 +30,22 @@ const App = () => {
   const [searchTermCollege, setSearchTermCollege] = useState('');
   const [players, setPlayers] = useState<any[]>([]);
   const [showActivePlayers, setShowActivePlayers] = useState(true); 
+  const [selectedPlayers, setSelectedPlayers] = useState<string[]>([]);
+  const [showCompareButton, setShowCompareButton] = useState(false);
 
   useEffect(() => {
     const localPlayers = localStorage.getItem('basketballPlayers');
     if (localPlayers) {
       setPlayers(JSON.parse(localPlayers));
     } else {
-            //grabs data from db if not already cached
+      //grabs data from db if not already cached
       fetchPlayersFromFirestore();
     }
   }, []);
+
+  useEffect(() => {
+    setShowCompareButton(selectedPlayers.length > 0);
+  }, [selectedPlayers]);
 
   const fetchPlayersFromFirestore = () => {
     const [data] = useCollectionData(playersRef, { idField: 'id' });
@@ -51,6 +57,19 @@ const App = () => {
 
   const handleActivePlayersClick = () => {
     setShowActivePlayers(!showActivePlayers);
+  };
+
+  const handlePlayerSelect = (name: string) => {
+    if (selectedPlayers.includes(name)) {
+      setSelectedPlayers(selectedPlayers.filter(player => player !== name));
+    } else {
+      setSelectedPlayers([...selectedPlayers, name]);
+    }
+  };
+
+  const handleCompareClick = () => {
+    // show stored players
+    console.log('Selected players:', selectedPlayers);
   };
 
   const filteredPlayers = players?.filter((player: any) => {
@@ -73,7 +92,7 @@ const App = () => {
   const positions: string[] = Array.from(new Set(players?.map(player => player['2'].toLowerCase()))) || [];
 
   return (
-    <div style={{ width: '100%', padding: '20px' }}>
+    <div style={{ width: '100%', padding: '20px', position: 'relative' }}>
       <Typography variant="h3" align="center" gutterBottom>
         Player Search
       </Typography>
@@ -133,14 +152,24 @@ const App = () => {
           onChange={(e) => setSearchTermCollege(e.target.value)}
           style={{ marginRight: '10px' }}
         />
+        {showCompareButton && (
+          <Button variant="contained" onClick={handleCompareClick} style={{ backgroundColor: '#007bff', color: '#fff', marginLeft: '10px', position: 'fixed', bottom: '20px', left: '50%', transform: 'translateX(-50%)', zIndex: '1' }}>
+            Compare
+          </Button>
+        )}
         <Button variant="contained" onClick={handleActivePlayersClick} style={{ backgroundColor: '#007bff', color: '#fff', marginLeft: '10px' }}>
           {showActivePlayers ? 'Show All Players' : 'Show Active Players'}
         </Button>
       </div>
       <div>
         {filteredPlayers?.map((player: any) => (
-          <div key={player.name} style={{ marginBottom: '20px', border: '1px solid #ddd', padding: '10px' }}>
+          <div key={player.name} style={{ marginBottom: '20px', border: '1px solid #ddd', padding: '10px', position: 'relative' }}>
             <Typography variant="h5" style={{ textTransform: 'uppercase' }}>{player.name.toUpperCase()}</Typography>
+            <Checkbox
+              style={{ position: 'absolute', top: 0, right: 0 }}
+              checked={selectedPlayers.includes(player.name)}
+              onChange={() => handlePlayerSelect(player.name)}
+            />
             <ul style={{ listStyle: 'none', paddingLeft: '0', marginTop: '10px' }}>
               <li>Start Year: {player['0']}</li>
               <li>End Year: {player['1']}</li>
