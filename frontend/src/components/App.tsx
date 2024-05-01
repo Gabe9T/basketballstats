@@ -4,14 +4,15 @@ import firebase from 'firebase/compat/app';
 import 'firebase/compat/firestore';
 import { Typography, TextField, Button, Select, MenuItem, FormControl, InputLabel, Checkbox } from '@mui/material';
 
+
 const firebaseConfig = {
-  apiKey: "AIzaSyB-JYRIALparZSHrk7OBOdDUdmAAiSV19s",
-  authDomain: "basketball-stats-7879b.firebaseapp.com",
-  projectId: "basketball-stats-7879b",
-  storageBucket: "basketball-stats-7879b.appspot.com",
-  messagingSenderId: "281938597352",
-  appId: "1:281938597352:web:6b9696ad1058a0fe40805d",
-  measurementId: "G-61VN9761BF"
+  apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
+  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
+  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
+  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
+  appId: import.meta.env.VITE_FIREBASE_APP_ID,
+  measurementId: import.meta.env.VITE_FIREBASE_MEASUREMENT_ID
 };
 
 if (!firebase.apps.length) {
