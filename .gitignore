@@ -1,1 +1,6 @@
+
+#service key 
 serviceAccountKey.json
+
+#env
+.env
