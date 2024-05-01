@@ -30,24 +30,6 @@ To run the application, simply execute the Python script `main.py` using a Pytho
 
 ## Installation
 
-To install the required dependencies, run:
-
-```bash
-pip install -r requirements.txt
-```
-
-
-
-
-
-
-
-
-
-
-
-## Installation
-
 1. Clone the repository:
 
 ```bash

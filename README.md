@@ -1,9 +1,9 @@
 # Basketball Stats
----
+
 This is a web application built with React.js that allows users to search for basketball players and compare their statistics.
 
 ## Features
----
+
 - **Player Search**: Users can search for basketball players based on various criteria such as name, years active, position, height, weight, date of birth, and college.
 
 - **Active Players Toggle**: Users can toggle between showing all players or only active players.
@@ -13,7 +13,7 @@ This is a web application built with React.js that allows users to search for ba
 - **Player Comparison**: After selecting players, users can compare their statistics to analyze differences and similarities.
 
 ## Usage
----
+
 1. Clone the repository:
 
 ```bash
@@ -34,7 +34,7 @@ npm install
 
 
 ## Technologies Used
----
+
 - **React.js**: A JavaScript library for building user interfaces.
 - **Firebase Firestore**: A flexible, scalable database for mobile, web, and server development.
 - **Material-UI**: A popular React UI framework for building responsive and accessible web apps.
@@ -43,7 +43,7 @@ npm install
 
 
 ## Player Comparison
----
+
 The player comparison feature allows users to select multiple players and compare their statistics visually using charts. Here's how it works:
 
 - **Select Players**: Users can search for players and select multiple players by clicking on the checkboxes next to their names.
