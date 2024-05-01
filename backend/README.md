@@ -36,7 +36,7 @@ To run the application, simply execute the Python script `main.py` using a Pytho
 git clone https://github.com/Gabe9T/basketballstats.git
 ```
 ```bash
-cd basketball-player-stats-scraper
+cd basketballstats
 ```
 2. Set up a virtual environment (optional but recommended):
 
