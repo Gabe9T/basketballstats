@@ -28,17 +28,34 @@ def scrape_basketball_stats():
                 caption = table.find('caption').text
                 data_rows = table.find_all('tr')
                 
+                players_data = []
                 for row in data_rows:
                     player_info = {}
-                    columns = row.find_all(['td', 'a'])
+                    columns = row.find_all(['td', 'a', 'th'])
                     if columns:  
-                        player_name = columns[0].text 
-                        player_info['name'] = player_name
-                        player_stats = [column.text for column in columns[1:]] 
-                        for index, stat in enumerate(player_stats):
-                            player_info[str(index)] = stat
-                        letter_players_ref = db.collection('players').document(letter).collection('players').document(player_name)  
-                        letter_players_ref.set(player_info)  
+                        player_name_tag = columns[0].find('a')  # Find first <a> in column
+                        if player_name_tag:  # Check for  <a>
+                            player_name = player_name_tag.text  # Get the text within the <a> tag
+                            player_link = player_name_tag['href']  # Get the value of the 'href'
+                            
+                            # info for links 
+                            link_data = {
+                                'name': player_name,
+                                'link': player_link
+                            }
+                            db.collection('links').add(link_data)
+                            
+                            # Exclude cells 7 and 9 (dupes)
+                            player_stats = [column.text for index, column in enumerate(columns[1:]) if index != 6 and index != 8]
+                            
+                            player_info['info'] = player_stats
+                            
+                            letter_players_ref = db.collection('players').document(letter).collection('players').document(player_name)
+                            letter_players_ref.set(player_info)
+                            
+                            players_data.append(player_info)
+                            
+                all_stats[letter] = players_data
             else:
                 all_stats[letter] = "Table not found on the webpage."
         else:
