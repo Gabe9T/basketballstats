@@ -1,1 +1,1 @@
-pip install beautifulsoup4 flask requests firebase-admin
+pip install beautifulsoup4 flask requests firebase-admin hashlib re
