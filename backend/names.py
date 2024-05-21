@@ -1,6 +1,8 @@
 from flask import Flask
 from bs4 import BeautifulSoup
 import requests
+import json
+import os
 
 app = Flask(__name__)
 
@@ -38,6 +40,14 @@ def scrape_basketball_stats():
                         all_players.append(player_info)
         else:
             print(f"Failed to fetch webpage for letter {letter}.")
+
+    # Ensure the 'data' directory exists
+    if not os.path.exists('data'):
+        os.makedirs('data')
+
+    # Writing data to a JSON file in the 'data' directory
+    with open('data/basketball_players.json', 'w') as f:
+        json.dump(all_players, f)
 
     return {'information': all_players}
 
