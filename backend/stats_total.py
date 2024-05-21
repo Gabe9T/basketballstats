@@ -1,10 +1,11 @@
 from flask import Flask, jsonify
 from bs4 import BeautifulSoup
 import requests
+import json
+import os
 
 app = Flask(__name__)
 
-@app.route('/')
 def scrape_player_info(player_link):
     """
     Scrapes player info from a given player link.
@@ -58,6 +59,14 @@ def scrape_basketball_stats():
                             all_players.append({'player_info': player_info, 'player_stats': player_stats})
         else:
             print(f"Failed to fetch webpage for letter {letter}.")
+
+    # Ensure the 'data' directory exists
+    if not os.path.exists('data'):
+        os.makedirs('data') #checking to see if it exist in file but it already should be there 
+
+        #writing data
+    with open('data/basketball_players_stats_total.json', 'w', encoding='utf-8') as f:
+        json.dump(all_players, f, ensure_ascii=False)
 
     return jsonify({'all_players': all_players})
 
