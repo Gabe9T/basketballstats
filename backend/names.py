@@ -23,15 +23,23 @@ def scrape_basketball_stats():
                 for row in data_rows:
                     columns = row.find_all(['td', 'th'])
                     if columns:
-                        player_info = [column.text for column in columns]
+                        player_info = {}
+                        player_info['name'] = columns[0].text
+                        player_info['start'] = columns[1].text
+                        player_info['end'] = columns[2].text
+                        player_info['position'] = columns[3].text
+                        player_info['height'] = columns[4].text
+                        player_info['weight'] = columns[5].text
+                        player_info['birthdate'] = columns[6].text
+                        player_info['college'] = columns[7].text
                         player_name_tag = columns[0].find('a')
                         if player_name_tag:
-                            player_info.append({'name': player_name_tag.text, 'link': player_name_tag['href']})
-                            all_players.append(player_info)
+                            player_info['link'] = player_name_tag['href']
+                        all_players.append(player_info)
         else:
             print(f"Failed to fetch webpage for letter {letter}.")
 
-    return {'infomation': all_players}
+    return {'information': all_players}
 
 if __name__ == '__main__':
     app.run(debug=True)
