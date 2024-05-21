@@ -43,11 +43,11 @@ def scrape_basketball_stats():
 
     # Ensure the 'data' directory exists
     if not os.path.exists('data'):
-        os.makedirs('data')
+        os.makedirs('data') #checking to see if it exist in file but it already should be there 
 
-    # Writing data to a JSON file in the 'data' directory
-    with open('data/basketball_players.json', 'w') as f:
-        json.dump(all_players, f)
+        #writing data
+    with open('data/basketball_players_names.json', 'w', encoding='utf-8') as f:
+        json.dump(all_players, f, ensure_ascii=False)
 
     return {'information': all_players}
 
