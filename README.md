@@ -64,4 +64,3 @@ The player comparison feature allows users to select multiple players and compar
 - add charted info
 - some team info 
 - nice looking frontend 
-- readme for backend
