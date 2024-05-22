@@ -60,12 +60,15 @@ def scrape_basketball_stats():
         else:
             print(f"Failed to fetch webpage for letter {letter}.")
 
-    # Ensure the 'data' directory exists
-    if not os.path.exists('data'):
-        os.makedirs('data') #checking to see if it exist in file but it already should be there 
+    # path to frontend src folder
+    frontend_data_dir = os.path.join(os.path.dirname(__file__), '..', 'frontend', 'src', 'data')
 
-        #writing data
-    with open('data/basketball_players_stats_total.json', 'w', encoding='utf-8') as f:
+    # check for exist
+    if not os.path.exists(frontend_data_dir):
+        os.makedirs(frontend_data_dir)
+
+    # write data
+    with open(os.path.join(frontend_data_dir, 'basketball_players_stats_total.json'), 'w', encoding='utf-8') as f:
         json.dump(all_players, f, ensure_ascii=False)
 
     return jsonify({'all_players': all_players})
