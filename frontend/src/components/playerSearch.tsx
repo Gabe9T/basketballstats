@@ -1,27 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { useCollectionData } from 'react-firebase-hooks/firestore';
-import firebase from 'firebase/compat/app';
-import 'firebase/compat/firestore';
 import { Typography, TextField, Button, Select, MenuItem, FormControl, InputLabel, Checkbox } from '@mui/material';
+import playersData from '../data/basketball_players_names.json';
 
-
-const firebaseConfig = {
-  apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
-  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
-  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
-  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
-  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
-  appId: import.meta.env.VITE_FIREBASE_APP_ID,
-  measurementId: import.meta.env.VITE_FIREBASE_MEASUREMENT_ID
-};
-
-if (!firebase.apps.length) {
-  firebase.initializeApp(firebaseConfig);
-}
-
-const playerSearch = () => {
-  const firestore = firebase.firestore();
-  const playersRef = firestore.collectionGroup('players');
+const PlayerSearch = () => {
   const [searchTermName, setSearchTermName] = useState('');
   const [searchTermYearsActive, setSearchTermYearsActive] = useState('');
   const [searchTermPosition, setSearchTermPosition] = useState('');
@@ -29,38 +10,24 @@ const playerSearch = () => {
   const [searchTermWeight, setSearchTermWeight] = useState('');
   const [searchTermDOB, setSearchTermDOB] = useState('');
   const [searchTermCollege, setSearchTermCollege] = useState('');
-  const [players, setPlayers] = useState<any[]>([]);
-  const [showActivePlayers, setShowActivePlayers] = useState(true); 
-  const [selectedPlayers, setSelectedPlayers] = useState<string[]>([]);
+  const [players, setPlayers] = useState([]);
+  const [showActivePlayers, setShowActivePlayers] = useState(true);
+  const [selectedPlayers, setSelectedPlayers] = useState([]);
   const [showCompareButton, setShowCompareButton] = useState(false);
 
   useEffect(() => {
-    const localPlayers = localStorage.getItem('basketballPlayers');
-    if (localPlayers) {
-      setPlayers(JSON.parse(localPlayers));
-    } else {
-      //grabs data from db if not already cached
-      fetchPlayersFromFirestore();
-    }
+    setPlayers(playersData);
   }, []);
 
   useEffect(() => {
     setShowCompareButton(selectedPlayers.length > 0);
   }, [selectedPlayers]);
 
-  const fetchPlayersFromFirestore = () => {
-    const [data] = useCollectionData(playersRef, { idField: 'id' });
-    if (data) {
-      localStorage.setItem('basketballPlayers', JSON.stringify(data));
-      setPlayers(data);
-    }
-  };
-
   const handleActivePlayersClick = () => {
     setShowActivePlayers(!showActivePlayers);
   };
 
-  const handlePlayerSelect = (name: string) => {
+  const handlePlayerSelect = (name) => {
     if (selectedPlayers.includes(name)) {
       setSelectedPlayers(selectedPlayers.filter(player => player !== name));
     } else {
@@ -69,35 +36,34 @@ const playerSearch = () => {
   };
 
   const handleCompareClick = () => {
-    // show stored players
     console.log('Selected players:', selectedPlayers);
   };
 
-  const filteredPlayers = players?.filter((player: any) => {
-    const startYear = parseInt(player['0'], 10);
-    const endYear = parseInt(player['1'], 10);
+  const filteredPlayers = players.filter((player) => {
+    const startYear = parseInt(player.start, 10);
+    const endYear = parseInt(player.end, 10);
     const searchYear = parseInt(searchTermYearsActive, 10);
-    
+
     return (
       (!showActivePlayers || (startYear <= new Date().getFullYear() && endYear >= new Date().getFullYear())) &&
       (searchTermName === '' || player.name.toLowerCase().includes(searchTermName.toLowerCase())) &&
       (searchTermYearsActive === '' || (startYear <= searchYear && searchYear <= endYear)) &&
-      (searchTermPosition === '' || player['2'].toLowerCase() === searchTermPosition.toLowerCase()) &&
-      (searchTermHeight === '' || player['3'].toLowerCase().includes(searchTermHeight.toLowerCase())) &&
-      (searchTermWeight === '' || player['4'].toLowerCase().includes(searchTermWeight.toLowerCase())) &&
-      (searchTermDOB === '' || player['5'].toLowerCase().includes(searchTermDOB.toLowerCase())) &&
-      (searchTermCollege === '' || player['7'].toLowerCase().includes(searchTermCollege.toLowerCase()))
+      (searchTermPosition === '' || player.position.toLowerCase() === searchTermPosition.toLowerCase()) &&
+      (searchTermHeight === '' || player.height.toLowerCase().includes(searchTermHeight.toLowerCase())) &&
+      (searchTermWeight === '' || player.weight.toLowerCase().includes(searchTermWeight.toLowerCase())) &&
+      (searchTermDOB === '' || player.birthdate.toLowerCase().includes(searchTermDOB.toLowerCase())) &&
+      (searchTermCollege === '' || player.college.toLowerCase().includes(searchTermCollege.toLowerCase()))
     );
   });
 
-  const positions: string[] = Array.from(new Set(players?.map(player => player['2'].toLowerCase()))) || [];
+  const positions = Array.from(new Set(players.map(player => player.position.toLowerCase())));
 
   return (
     <div style={{ width: '100%', padding: '20px', position: 'relative' }}>
       <Typography variant="h3" align="center" gutterBottom>
         Player Search
       </Typography>
-      <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '20px' }}>
+      <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '20px', flexWrap: 'wrap' }}>
         <TextField
           label="Search by name"
           variant="outlined"
@@ -163,7 +129,7 @@ const playerSearch = () => {
         </Button>
       </div>
       <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between' }}>
-        {filteredPlayers?.map((player: any) => (
+        {filteredPlayers.map((player) => (
           <div key={player.name} style={{ marginBottom: '20px', border: '1px solid #ddd', padding: '10px', width: 'calc(20% - 20px)', position: 'relative' }}>
             <Typography variant="h5" style={{ textTransform: 'uppercase', cursor: 'pointer' }} onClick={() => handlePlayerSelect(player.name)}>{player.name.toUpperCase()}</Typography>
             <Checkbox
@@ -172,13 +138,13 @@ const playerSearch = () => {
               onChange={() => handlePlayerSelect(player.name)}
             />
             <ul style={{ listStyle: 'none', paddingLeft: '0', marginTop: '10px' }}>
-              <li>Start Year: {player['0']}</li>
-              <li>End Year: {player['1']}</li>
-              <li>Position: {player['2']}</li>
-              <li>Height: {player['3']}</li>
-              <li>Weight: {player['4']}</li>
-              <li>DOB: {player['5']}</li>
-              <li>College: {player['7']}</li>
+              <li>Start Year: {player.start}</li>
+              <li>End Year: {player.end}</li>
+              <li>Position: {player.position}</li>
+              <li>Height: {player.height}</li>
+              <li>Weight: {player.weight}</li>
+              <li>DOB: {player.birthdate}</li>
+              <li>College: {player.college}</li>
             </ul>
           </div>
         ))}
@@ -187,4 +153,4 @@ const playerSearch = () => {
   );
 };
 
-export default playerSearch;
+export default PlayerSearch;
