@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { Typography, TextField, Button, Select, MenuItem, FormControl, InputLabel, Checkbox } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
+import { Typography, TextField, Button, Select, MenuItem, FormControl, InputLabel } from '@mui/material';
 import playersData from '../data/basketball_players_names.json';
 
 const PlayerSearch = () => {
@@ -14,6 +15,8 @@ const PlayerSearch = () => {
   const [showActivePlayers, setShowActivePlayers] = useState(true);
   const [selectedPlayers, setSelectedPlayers] = useState([]);
   const [showCompareButton, setShowCompareButton] = useState(false);
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     setPlayers(playersData);
@@ -36,7 +39,7 @@ const PlayerSearch = () => {
   };
 
   const handleCompareClick = () => {
-    console.log('Selected players:', selectedPlayers);
+    navigate('/PlayerChart', { state: { selectedPlayers } });
   };
 
   const filteredPlayers = players.filter((player) => {
@@ -124,28 +127,32 @@ const PlayerSearch = () => {
             Compare
           </Button>
         )}
-        <Button variant="contained" onClick={handleActivePlayersClick} style={{ backgroundColor: '#007bff', color: '#fff', marginLeft: '10px' }}>
-          {showActivePlayers ? 'Show All Players' : 'Show Active Players'}
+        <Button variant="contained" onClick={handleActivePlayersClick} style={{ backgroundColor: showActivePlayers ? '#28a745' : '#dc3545', color: '#fff', marginLeft: '10px' }}>
+          {showActivePlayers ? 'Showing Active Players' : 'Showing All Players'}
         </Button>
       </div>
-      <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between' }}>
+      <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center' }}>
         {filteredPlayers.map((player) => (
-          <div key={player.name} style={{ marginBottom: '20px', border: '1px solid #ddd', padding: '10px', width: 'calc(20% - 20px)', position: 'relative' }}>
-            <Typography variant="h5" style={{ textTransform: 'uppercase', cursor: 'pointer' }} onClick={() => handlePlayerSelect(player.name)}>{player.name.toUpperCase()}</Typography>
-            <Checkbox
-              style={{ position: 'absolute', top: 0, right: 0 }}
-              checked={selectedPlayers.includes(player.name)}
-              onChange={() => handlePlayerSelect(player.name)}
-            />
-            <ul style={{ listStyle: 'none', paddingLeft: '0', marginTop: '10px' }}>
-              <li>Start Year: {player.start}</li>
-              <li>End Year: {player.end}</li>
-              <li>Position: {player.position}</li>
-              <li>Height: {player.height}</li>
-              <li>Weight: {player.weight}</li>
-              <li>DOB: {player.birthdate}</li>
-              <li>College: {player.college}</li>
-            </ul>
+          <div
+            key={player.name}
+            style={{
+              border: '1px solid #ccc',
+              borderRadius: '5px',
+              padding: '10px',
+              margin: '10px',
+              cursor: 'pointer',
+              backgroundColor: selectedPlayers.includes(player.name) ? '#007bff' : '#fff',
+              color: selectedPlayers.includes(player.name) ? '#fff' : '#000'
+            }}
+            onClick={() => handlePlayerSelect(player.name)}
+          >
+            <Typography variant="h6">{player.name}</Typography>
+            <Typography variant="body2">Years Active: {player.start} - {player.end}</Typography>
+            <Typography variant="body2">Position: {player.position}</Typography>
+            <Typography variant="body2">Height: {player.height}</Typography>
+            <Typography variant="body2">Weight: {player.weight}</Typography>
+            <Typography variant="body2">DOB: {player.birthdate}</Typography>
+            <Typography variant="body2">College: {player.college}</Typography>
           </div>
         ))}
       </div>
