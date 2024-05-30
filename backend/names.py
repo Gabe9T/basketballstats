@@ -3,6 +3,7 @@ from bs4 import BeautifulSoup
 import requests
 import json
 import os
+import time
 
 app = Flask(__name__)
 
@@ -11,9 +12,10 @@ def scrape_basketball_stats():
     base_url = 'https://www.basketball-reference.com/players/'
     all_players = []
 
-    for letter in 'abcdefghijklmnopqrstuvwxyz':
+    for letter in 'qlj':
         url = base_url + letter + '/'
         response = requests.get(url)
+        time.sleep(1)  
 
         if response.status_code == 200:
             soup = BeautifulSoup(response.content, 'html.parser')

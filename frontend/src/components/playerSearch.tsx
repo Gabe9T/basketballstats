@@ -57,7 +57,7 @@ const PlayerSearch = () => {
       (searchTermDOB === '' || player.birthdate.toLowerCase().includes(searchTermDOB.toLowerCase())) &&
       (searchTermCollege === '' || player.college.toLowerCase().includes(searchTermCollege.toLowerCase()))
     );
-  });
+  }).filter(player => player.name.toLowerCase() !== 'player');
 
   const positions = Array.from(new Set(players.map(player => player.position.toLowerCase())));
 
