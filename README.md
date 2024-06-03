@@ -69,7 +69,6 @@ The player comparison feature allows users to select multiple players and compar
 
 # To-do
 - finish up automation of scrapes
-- Fix readme for backend
 
 
 ## Stretch Goals
