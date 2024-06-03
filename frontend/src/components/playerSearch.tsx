@@ -1,25 +1,38 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Typography, TextField, Button, Select, MenuItem, FormControl, InputLabel } from '@mui/material';
+import { Typography, TextField, Button, Select, MenuItem, FormControl, InputLabel, Card, CardContent, CardActions } from '@mui/material';
 import playersData from '../data/basketball_players_names.json';
 
-const PlayerSearch = () => {
-  const [searchTermName, setSearchTermName] = useState('');
-  const [searchTermYearsActive, setSearchTermYearsActive] = useState('');
-  const [searchTermPosition, setSearchTermPosition] = useState('');
-  const [searchTermHeight, setSearchTermHeight] = useState('');
-  const [searchTermWeight, setSearchTermWeight] = useState('');
-  const [searchTermDOB, setSearchTermDOB] = useState('');
-  const [searchTermCollege, setSearchTermCollege] = useState('');
-  const [players, setPlayers] = useState([]);
-  const [showActivePlayers, setShowActivePlayers] = useState(true);
-  const [selectedPlayers, setSelectedPlayers] = useState([]);
-  const [showCompareButton, setShowCompareButton] = useState(false);
+interface Player {
+  name: string;
+  start: string;
+  end: string;
+  position: string;
+  height: string;
+  weight: string;
+  birthdate: string;
+  college: string;
+  link?: string;
+}
+
+const PlayerSearch: React.FC = () => {
+  const [searchTermName, setSearchTermName] = useState<string>('');
+  const [searchTermYearsActive, setSearchTermYearsActive] = useState<string>('');
+  const [searchTermPosition, setSearchTermPosition] = useState<string>('');
+  const [searchTermHeight, setSearchTermHeight] = useState<string>('');
+  const [searchTermWeight, setSearchTermWeight] = useState<string>('');
+  const [searchTermDOB, setSearchTermDOB] = useState<string>('');
+  const [searchTermCollege, setSearchTermCollege] = useState<string>('');
+  const [players, setPlayers] = useState<Player[]>([]);
+  const [showActivePlayers, setShowActivePlayers] = useState<boolean>(true);
+  const [selectedPlayers, setSelectedPlayers] = useState<string[]>([]);
+  const [showCompareButton, setShowCompareButton] = useState<boolean>(false);
+  const [hoveredPlayer, setHoveredPlayer] = useState<Player | null>(null);
 
   const navigate = useNavigate();
 
   useEffect(() => {
-    setPlayers(playersData);
+    setPlayers(playersData as Player[]);
   }, []);
 
   useEffect(() => {
@@ -30,7 +43,7 @@ const PlayerSearch = () => {
     setShowActivePlayers(!showActivePlayers);
   };
 
-  const handlePlayerSelect = (name) => {
+  const handlePlayerSelect = (name: string) => {
     if (selectedPlayers.includes(name)) {
       setSelectedPlayers(selectedPlayers.filter(player => player !== name));
     } else {
@@ -120,42 +133,66 @@ const PlayerSearch = () => {
           variant="outlined"
           value={searchTermCollege}
           onChange={(e) => setSearchTermCollege(e.target.value)}
-          style={{ marginRight: '10px' }}
         />
-        {showCompareButton && (
-          <Button variant="contained" onClick={handleCompareClick} style={{ backgroundColor: '#007bff', color: '#fff', marginLeft: '10px', position: 'fixed', bottom: '20px', left: '50%', transform: 'translateX(-50%)', zIndex: '1' }}>
-            Compare
-          </Button>
-        )}
-        <Button variant="contained" onClick={handleActivePlayersClick} style={{ backgroundColor: showActivePlayers ? '#28a745' : '#dc3545', color: '#fff', marginLeft: '10px' }}>
-          {showActivePlayers ? 'Showing Active Players' : 'Showing All Players'}
+      </div>
+      <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '20px' }}>
+        <Button variant="contained" onClick={handleActivePlayersClick} color={showActivePlayers ? "secondary" : "primary"}>
+          {showActivePlayers ? "Show All Players" : "Show Active Players"}
         </Button>
       </div>
       <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center' }}>
         {filteredPlayers.map((player) => (
           <div
             key={player.name}
-            style={{
-              border: '1px solid #ccc',
-              borderRadius: '5px',
-              padding: '10px',
-              margin: '10px',
-              cursor: 'pointer',
-              backgroundColor: selectedPlayers.includes(player.name) ? '#007bff' : '#fff',
-              color: selectedPlayers.includes(player.name) ? '#fff' : '#000'
-            }}
-            onClick={() => handlePlayerSelect(player.name)}
+            onMouseEnter={() => setHoveredPlayer(player)}
+            onMouseLeave={() => setHoveredPlayer(null)}
+            style={{ position: 'relative', margin: '5px' }}
           >
-            <Typography variant="h6">{player.name}</Typography>
-            <Typography variant="body2">Years Active: {player.start} - {player.end}</Typography>
-            <Typography variant="body2">Position: {player.position}</Typography>
-            <Typography variant="body2">Height: {player.height}</Typography>
-            <Typography variant="body2">Weight: {player.weight}</Typography>
-            <Typography variant="body2">DOB: {player.birthdate}</Typography>
-            <Typography variant="body2">College: {player.college}</Typography>
+            <Button
+              variant={selectedPlayers.includes(player.name) ? "contained" : "outlined"}
+              color={selectedPlayers.includes(player.name) ? "primary" : "inherit"}
+              onClick={() => handlePlayerSelect(player.name)}
+            >
+              {player.name}
+            </Button>
+            {hoveredPlayer === player && (
+              <div
+                style={{
+                  position: 'absolute',
+                  top: '100%',
+                  left: '50%',
+                  transform: 'translateX(-50%)',
+                  zIndex: 1,
+                  marginTop: '10px',
+                  minWidth: '200px'
+                }}
+              >
+                <Card>
+                  <CardContent>
+                    <Typography variant="h6">{player.name}</Typography>
+                    <Typography variant="body2">Years Active: {player.start} - {player.end}</Typography>
+                    <Typography variant="body2">Position: {player.position}</Typography>
+                    <Typography variant="body2">Height: {player.height}</Typography>
+                    <Typography variant="body2">Weight: {player.weight}</Typography>
+                    <Typography variant="body2">DOB: {player.birthdate}</Typography>
+                    <Typography variant="body2">College: {player.college}</Typography>
+                  </CardContent>
+                  <CardActions>
+                    <Button size="small" onClick={() => handlePlayerSelect(player.name)}>Select</Button>
+                  </CardActions>
+                </Card>
+              </div>
+            )}
           </div>
         ))}
       </div>
+      {showCompareButton && (
+        <div style={{ display: 'flex', justifyContent: 'center', marginTop: '20px' }}>
+          <Button variant="contained" color="primary" onClick={handleCompareClick}>
+            Compare
+          </Button>
+        </div>
+      )}
     </div>
   );
 };

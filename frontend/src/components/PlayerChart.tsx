@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { Line } from 'react-chartjs-2';
 import {
@@ -12,7 +12,7 @@ import {
   Legend,
   Filler,
 } from 'chart.js';
-import { Container, Typography, FormControl, InputLabel, Select, MenuItem, Button, Box, List, ListItem, IconButton} from '@mui/material';
+import { Container, Typography, FormControl, InputLabel, Select, MenuItem, Button, Box, List, ListItem, IconButton } from '@mui/material';
 import { ArrowBack } from '@mui/icons-material';
 import playerData from '../data/basketball_players_stats_total.json';
 
@@ -63,6 +63,13 @@ const percentageStats = [
   "free throw percentage"
 ];
 
+type PlayerStats = {
+  [year: string]: {
+    age: string;
+    stats: string[];
+  };
+};
+
 const PlayerChart: React.FC = () => {
   const location = useLocation();
   const { selectedPlayers } = location.state || { selectedPlayers: [] };
@@ -71,15 +78,16 @@ const PlayerChart: React.FC = () => {
   const [selectedYear, setSelectedYear] = useState<string>("all");
   const navigate = useNavigate();
 
-  const getPlayerStats = (playerName: string) => {
+  const getPlayerStats = (playerName: string): PlayerStats | null => {
     const player = playerData.find((p: any) => p.player_info.name === playerName);
+    //@ts-ignore
     return player ? player.player_stats : null;
   };
 
-  const sortStatsByYear = (stats: any) => {
+  const sortStatsByYear = (stats: PlayerStats) => {
     const sortedYears = Object.keys(stats).sort((a, b) => parseInt(a) - parseInt(b));
 
-    const sortedStats: any = {};
+    const sortedStats: PlayerStats = {};
     sortedYears.forEach((year) => {
       sortedStats[year] = stats[year];
     });
@@ -117,7 +125,7 @@ const PlayerChart: React.FC = () => {
       const sortedStats = sortStatsByYear(stats);
       const statIndex = statLabels.indexOf(selectedStat) + 3; // this skips  non-numeric stats
 
-      const data = uniqueYears.map((year) => 
+      const data = uniqueYears.map((year) =>
         sortedStats[year] ? parseFloat(sortedStats[year].stats[statIndex]) : null
       );
 
@@ -133,12 +141,12 @@ const PlayerChart: React.FC = () => {
 
     return {
       labels: uniqueYears,
-      datasets,
+      datasets: datasets as any[], 
     };
   };
 
   const calculateTotals = (year: string) => {
-    const totals: any = {};
+    const totals: Record<string, number | string> = {};
 
     visiblePlayers.forEach((playerName) => {
       const stats = getPlayerStats(playerName);
@@ -234,7 +242,7 @@ const PlayerChart: React.FC = () => {
           </Select>
         </FormControl>
         <Box my={2}>
-          {selectedPlayers.map((playerName) => (
+          {selectedPlayers.map((playerName: string) => (
             <Button
               key={playerName}
               variant={visiblePlayers.includes(playerName) ? 'contained' : 'outlined'}
@@ -272,7 +280,7 @@ const PlayerChart: React.FC = () => {
             {Object.entries(totals).map(([player, total]) => (
               <ListItem key={player}>
                 <Typography>
-                  {player}: {total}
+                  {player}: {typeof total === "number" ? total.toString() : total}
                 </Typography>
               </ListItem>
             ))}
