@@ -1,4 +1,9 @@
-# Basketball Stats
+<h1 align="center">Basketball Stats</h1>
+
+<p align="center">
+  <img src="frontend/src/components/assets/basketball.gif" alt="Basketball GIF">
+</p>
+
 
 This is a web application built with React.js that allows users to search for basketball players and compare their statistics.
 
@@ -35,10 +40,16 @@ npm install
 
 ## Technologies Used
 
-- **React.js**: A JavaScript library for building user interfaces.
-- **Firebase Firestore**: A flexible, scalable database for mobile, web, and server development.
-- **Material-UI**: A popular React UI framework for building responsive and accessible web apps.
+- **Vite**: A fast development server and build tool for modern web development.
+- **React**: A JavaScript library for building user interfaces.
+- **TypeScript**: A superset of JavaScript that adds static typing to the language.
 - **Chart.js**: A simple yet flexible JavaScript charting library for designers & developers.
+- **Material-UI**: A popular React UI framework for building responsive and accessible web apps.
+- **Python**: A high-level programming language used for various applications.
+- **Flask**: A lightweight WSGI web application framework in Python.
+- **Requests**: A Python library for making HTTP requests.
+- **Beautiful Soup**: A Python library for pulling data out of HTML and XML files.
+
 
 
 
@@ -54,13 +65,13 @@ The player comparison feature allows users to select multiple players and compar
 
 
 
+# Todo
+- finish up automation of scrapes
+- Fix readme for backend
 
 
-
-
-
-
-## todo 
-- add charted info
+## Stretch Goals
+- add last 5 games to charted info 
+- Inprove frontend look
 - some team info 
-- nice looking frontend 
+- individual player pages 
