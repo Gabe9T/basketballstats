@@ -17,6 +17,8 @@ This is a web application built with React.js that allows users to search for ba
 
 - **Player Comparison**: After selecting players, users can compare their statistics to analyze differences and similarities.
 
+- **Visual Data Representation**: Statistics are visualized using Chart.js to provide a clear and interactive representation of player data.
+
 ## Usage
 
 1. Clone the repository:
@@ -65,7 +67,7 @@ The player comparison feature allows users to select multiple players and compar
 
 
 
-# Todo
+# To-do
 - finish up automation of scrapes
 - Fix readme for backend
 
@@ -75,3 +77,16 @@ The player comparison feature allows users to select multiple players and compar
 - Inprove frontend look
 - some team info 
 - individual player pages 
+
+
+---
+
+Feel free to contribute to this project by submitting issues or pull requests. For any questions or support, please contact me [Here](mailto:gabrieltucker260@gmail.com).
+
+---
+
+<p align="center">
+  <a href="https://github.com/Gabe9T/basketballstats">
+    <img src="https://img.shields.io/github/stars/Gabe9T/basketballstats?style=social" alt="GitHub Stars">
+  </a>
+</p>
