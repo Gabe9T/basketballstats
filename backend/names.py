@@ -9,10 +9,11 @@ app = Flask(__name__)
 
 @app.route('/')
 def scrape_basketball_stats():
+    time.sleep(2)
     base_url = 'https://www.basketball-reference.com/players/'
     all_players = []
 
-    for letter in 'qlj':
+    for letter in 'abcdefghijklmnopqrstuvwxyz':
         url = base_url + letter + '/'
         response = requests.get(url)
         time.sleep(1)  
@@ -55,6 +56,7 @@ def scrape_basketball_stats():
         json.dump(all_players, f, ensure_ascii=False)
 
     return {'information': all_players}
+    time.sleep(5)
 
 if __name__ == '__main__':
     app.run(debug=True)
